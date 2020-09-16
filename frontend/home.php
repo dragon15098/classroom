@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <html lang="en">
     <head>
         <title>
@@ -10,7 +13,9 @@
     <body>
         <div class="header">
             <h1>
-                My Website
+                <?php
+                	echo "Welcome " . $_SESSION['username'];
+                ?>
             </h1>
             <p>
                 A <b>responsive</b> website created by me.
@@ -52,35 +57,54 @@
                 </div>
             </div>
             <div class="main">
-		<h2>
-		    Colored Table Header
-		</h2>
-                <?php
-			include './../backend/db_connect.php';
-			$db = new DatabaseConnection();
-			$result = $db->query('SELECT UserId, Username, Password FROM user;');
-		
-			echo "<table border='1'>
-				<tr>
-				<th>Firstname</th>
-				<th>Lastname</th>	
-				<th>Action</th>
-				</tr>";
-			
-			while($row = mysqli_fetch_array($result))
-			{			
-				
-				echo "<tr>";
-				echo "<td>" . $row['Username'] . "</td>";
-				echo "<td>" . $row['Password'] . "</td>";
-				echo "<td>" . "<button class=\"button button_action\">View detail</button>" . "</td>";
-				echo "</tr>";
-			}
-
-			echo "</table>";
-
-			mysqli_close($con);
-		?>
+				<h2>
+					List user
+				</h2>
+				<table border='1'>
+					<tr>
+						<th>Id</th>
+						<th>Username</th>	
+						<th>Action</th>
+					</tr>
+	                <?php
+						// include './../backend/db_connect.php';
+						// $db = new DatabaseConnection();
+						// $sql = 'SELECT UserId, Username, Password FROM user WHERE UserId <> ?;';
+						// $result = $db->prepareQuery($sql, "d", $_SESSION["userId"]);
+						// while($row = mysqli_fetch_array($result))
+						// {	
+						// 	echo "<tr>";
+						// 	echo "<td>" . $row['UserId'] . "</td>";
+						// 	echo "<td>" . $row['Username'] . "</td>";
+						// 	echo "<td>" . "<button class=\"button button_action\">View detail</button>" . "</td>";
+						// 	echo "</tr>";
+						// }
+					?>
+				</table>
+				<div class="pagination">
+					<a href="#">&laquo;</a>
+					<!-- <a href="#">1</a>
+					<a href="#" class="active">2</a>
+					<a href="#">3</a>
+					<a href="#">4</a>
+					<a href="#">5</a>
+					<a href="#">6</a> -->
+					<?php
+						include './../backend/db_connect.php';
+						$db = new DatabaseConnection();
+						$sql = 'SELECT COUNT(*) FROM user WHERE UserId <> ?;';
+						$result = $db->prepareQuery($sql, "d", $_SESSION["userId"]);
+						$total = $result->fetchColumn();
+						echo $total;
+						$limit = 5;
+						$page_show = $total / $limit;
+						echo $page_show;
+						while($page_show--){
+							echo "<a> 4 </a>";
+						}
+					?>
+					<a href="#">&raquo;</a>
+				</div>
             </div>
         </div>
         <div class="footer">
