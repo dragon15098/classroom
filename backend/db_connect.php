@@ -23,23 +23,32 @@ class DatabaseConnection {
 		  exit();
 		}
 		
-		return mysqli_query($this->conn, 'SELECT UserId, Username, Password FROM user;');
+		return mysqli_query($this->conn, $sql);
 	}
 //
-	public function prepareQuery($sql, $params_type, ...$params)
+	private function prepareQuery($sql, $params_type, ...$params)
 	{	
 		if ($this->conn->connect_errno) {
 		  echo "Failed to connect to MySQL: " . $conn -> connect_error;
 		  exit();
 		}
 		$stmt = $this->conn->prepare($sql);
-		$param_size = sizeof($params);
-		for($x = 0; $x < $param_size; $x++){
-			$stmt->bind_param($x, $params[$x]);
-		}
-  		$stmt->execute();
-		return $result = $stmt->get_result();
+		$stmt->bind_param($params_type, ...$params);
+		return $stmt;
 	}
 
+	public function getResultQuerry($sql, $params_type, ...$params){
+		$stmt = $this->prepareQuery($sql, $params_type, ...$params);
+		$result = $stmt->execute();
+		return $stmt->get_result();
+	}
+
+	public function getStatusQuerry($sql, $params_type, ...$params){
+		echo $sql;
+		$stmt = $this->prepareQuery($sql, $params_type, ...$params);
+		$result = $stmt->execute();
+		echo $stmt->error;
+		return $result;
+	}
 }
 ?>

@@ -11,7 +11,7 @@
 		else{
 			$db = new DatabaseConnection();
 			$sql = "SELECT * FROM user WHERE Username = ?;";
-			$result = $db->prepareQuery($sql, "s", $username);
+			$result = $db->getResultQuerry($sql, "s", $username);
 
 			if($result->num_rows != 1){
 				header("Location: ../index.php?error=duplicate_user");
@@ -32,5 +32,9 @@
 				exit();	
 			}
 		}
+	}
+	else {
+		header("Location: ../index.php?error=missing");
+		exit();
 	}
 ?>

@@ -1,7 +1,6 @@
 <?php
 	session_start();
 	include './../backend/db_connect.php';
-    $db = new DatabaseConnection();
 ?>
 <html lang="en">
     <head>
@@ -11,6 +10,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="home.css">
+		<link rel="stylesheet" href="user_detail.css">
     </head>
     <body>
         <div class="header">
@@ -58,51 +58,44 @@
                     Image
                 </div>
             </div>
-            <div class="main">
-				<h2>
-					List user
-				</h2>
-				<table border='1'>
-					<tr>
-						<th>Id</th>
-						<th>Username</th>
-						<th>Action</th>
-					</tr>
-	                <?php
-						$sql = 'SELECT UserId, Username, Password FROM user WHERE UserId <> ? LIMIT 2;';
-						$result = $db->getResultQuerry($sql, "d", $_SESSION["userId"]);
-						while($row = mysqli_fetch_array($result))
-						{	
-							echo "<tr>";
-							echo "<td>" . $row['UserId'] . "</td>";
-							echo "<td>" . $row['Username'] . "</td>";
-							echo "<td>" . "<button onclick=\"location.href='./user_detail.php?id=". $row['UserId']. "'\" class=\"button button_action\">View detail</button>" . "</td>";
-							echo "</tr>";
-						}
-					?>
-				</table>
-				<div class="pagination">
-					<a href="#">&laquo;</a>
-					<!-- <a href="#">1</a>
-					<a href="#" class="active">2</a>
-					<a href="#">3</a>
-					<a href="#">4</a>
-					<a href="#">5</a>
-					<a href="#">6</a> -->
-					<?php
-						
-						$sql = 'SELECT COUNT(*) as total FROM user WHERE UserId <> ? LIMIT 5 OFFSET 0;';
-						$result = $db->getResultQuerry($sql, "d", $_SESSION["userId"]);
-						$row = mysqli_fetch_assoc($result);
-						$total =  $row["total"];	
-						$size = 5;
-						$loop_time = $total / $size;
-						for ($page_number = 1; $page_number <= $loop_time+1; $page_number++) {
-							echo '<a href="#">'.$page_number.'</a>';
-						}				
-					?>
-					<a href="#">&raquo;</a>
+            <div class="main">	
+				<?php
+					$db = new DatabaseConnection();
+					$sql = 'SELECT * FROM user WHERE UserId = ?;';
+					$result = $db->getResultQuerry($sql, "d", $_GET["id"]);
+					$row = mysqli_fetch_array($result);
+				?>
+				<form method="POST">
+				<div class="container">
+				    <h1>User infomation</h1>
+				    <hr>
+
+				    <label for="Name"><b>Name</b></label>
+				    <input type="text" placeholder="Name" name="Name" id="Name" value= <?php echo $row["Name"] ?> >
+
+				    <label for="Username"><b>Username</b></label>
+				    <input type="text" placeholder="Username" name="Username" id="Username" readonly value= <?php echo $row["Username"] ?> >
+				   
+				   <label for="Password"><b>Password</b></label>
+				    <input type="Password" placeholder="Password" name="Password" id="Password"  value="" required >
+
+				   <label for="VerifyPassword"><b>Verify password</b></label>
+				    <input type="Password" placeholder="VerifyPassword" name="VerifyPassword" id="VerifyPassword" required value="">
+				   
+				    <label for="Email"><b>Email</b></label>
+				    <input type="text" placeholder="Email" name="Email" id="Email"  value= <?php echo $row["Email"] ?>  >
+				  
+				    <label for="Phone number"><b>Phone number</b></label>
+				    <input type="text" placeholder="Phone number" name="PhoneNumber" id="PhoneNumber" value= <?php echo $row["PhoneNumber"] ?> >
+				    <hr>
+
+				    <input type="hidden" placeholder="UserId" name="UserId" id="UserId"  value= <?php echo $row["UserId"] ?>  >
+
+				    <button formaction="./../backend/send_message.php" type="submit" style="float: left;" class="btn btn_action">Send Mail</button>
+				    <button formaction="./../backend/update_info.php" type="submit" style="float: right;" class="btn btn_action">Update Info</button>
 				</div>
+				
+				</form>
             </div>
         </div>
         <div class="footer">
