@@ -28,8 +28,9 @@ class Model_User
 		}
 		return Page::construct3($limit, $offset, $users);
 	}
-	
-	public function getUserById($userId){
+
+	public function getUserById($userId)
+	{
 		$sql = 'SELECT * FROM user WHERE userId = ?;';
 		$result = $this->db->getResultQuerry($sql, "d", $userId);
 		$row = mysqli_fetch_array($result);
@@ -40,6 +41,21 @@ class Model_User
 			$row['email'],
 			$row['phoneNumber'],
 			$row['type']
+		);
+	}
+
+	public function addUser($username, $password, $name, $email, $phoneNumber, $type)
+	{
+		$sql = "INSERT INTO user (username, password, name, email, phonenumber, type) VALUES (?, ?, ?,?, ?, ?);";
+		return $this->db->getStatusQuerry(
+			$sql,
+			"sssssd",
+			$username,
+			$password,
+			$name,
+			$email,
+			$phoneNumber,
+			$type
 		);
 	}
 
@@ -64,7 +80,27 @@ class Model_User
 		}
 	}
 
-	public function updateUser($user)
+	public function updateUser($username, $name, $email, $phone_number, $id)
 	{
+		$sql = "UPDATE user SET username = ?, name = ?, email = ?, phoneNumber = ? WHERE userId = ?;";
+		return $this->db->getStatusQuerry(
+			$sql,
+			"ssssd",
+			$username,
+			$name,
+			$email,
+			$phone_number,
+			$id
+		);
+	}
+	public function updatePassword($password, $id)
+	{
+		$sql = "UPDATE user SET password = ? WHERE userId = ?;";
+		return $this->db->getStatusQuerry(
+			$sql,
+			"sd",
+			password_hash($password, PASSWORD_DEFAULT),
+			$id
+		);
 	}
 }

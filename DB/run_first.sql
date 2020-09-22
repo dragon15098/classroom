@@ -2,7 +2,9 @@ CREATE DATABASE classroomDB;
 USE classroomDB;
 
 DROP TABLE user_message;
+DROP TABLE submit_job;
 DROP TABLE user;
+DROP TABLE job;
 
 CREATE TABLE user ( 
 userId INT NOT NULL AUTO_INCREMENT, 
@@ -22,3 +24,17 @@ content NVARCHAR(2000),
 PRIMARY KEY (messageId),
 CONSTRAINT fk_from_user FOREIGN KEY (fromUserId) REFERENCES user(userId),
 CONSTRAINT fk_to_user FOREIGN KEY (toUserId) REFERENCES user(userId));
+
+CREATE TABLE job ( 
+jobId INT NOT NULL AUTO_INCREMENT, 
+jobName VARCHAR(255),
+filePath VARCHAR(200),
+PRIMARY KEY (jobId));
+
+CREATE TABLE submit_job ( 
+userJobId INT NOT NULL AUTO_INCREMENT,
+userId INT,
+jobId INT,
+filePath VARCHAR(200),
+PRIMARY KEY (userJobId),
+CONSTRAINT fk_job_user_id FOREIGN KEY (jobId) REFERENCES job(jobId));

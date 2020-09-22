@@ -42,12 +42,12 @@ class DatabaseConnection {
 		// echo $sql;
 		$stmt = $this->prepareQuery($sql, $param_types, ...$params);
 		$result = $stmt->execute();
-	//	printf("Error: %s.\n", $stmt->error);
+		// printf("Error: %s.\n", $stmt->error);
 		return $stmt->get_result();
 	}
 
 	public function getStatusQuerry($sql, $param_types, ...$params){
-		// echo $sql;
+		//  echo $sql;
 		$stmt = $this->prepareQuery($sql, $param_types, ...$params);
 		$result = $stmt->execute();
 		// echo $stmt->error;
