@@ -12,7 +12,7 @@
 
 <body>
     <?php include_once "./../view/header.php";  ?>
-    <?php include_once "./../view/navbar.html"; ?>
+    <?php include_once "./../view/navbar.php"; ?>
 
     <div class="row">
         <?php include_once "./../view/side.php"; ?>
@@ -41,6 +41,11 @@
                     <input type="text" placeholder="Phone number" name="phoneNumber" id="phoneNumber">
                     <hr>
 
+                    <label for="type">Student / Teacher:</label>
+                    <select id="type" name="type" >
+                      <option value="0">Student</option>
+                      <option value="1">Teacher</option>
+                    </select>
                     <input type="hidden" name="action" value='create'>
 
                     <button method="POST" formaction="C_AddUser.php" type="submit" style="float: right;" class="btn btn_action">Add user</button>

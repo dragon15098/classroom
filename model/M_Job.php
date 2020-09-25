@@ -11,19 +11,28 @@ class Model_Job
         $this->db = new DatabaseConnection();
     }
 
-    public function getAllJob($limit, $offset)
+    public function getAllJob($currentPage)
     {
-        $sql = "SELECT * FROM job;";
-        $result = $this->db->getResultQuerry($sql, "");
+        $limit = PAGE_SIZE;
+		$offset = ($currentPage - 1) * PAGE_SIZE;
+        $sql = "SELECT * FROM job LIMIT ? OFFSET ?;";
+        $result = $this->db->getResultQuerry($sql, "dd", $limit, $offset);
         $jobs = [];
-        while ($job = mysqli_fetch_array($result)) {
-            $jobs[] = Entity_Job::construct3(
-                $job["jobId"],
-                $job["jobName"],
-                $job["filePath"]
-            );
+        if($result != null){
+            while ($job = mysqli_fetch_array($result)) {
+                $jobs[] = Entity_Job::construct3(
+                    $job["jobId"],
+                    $job["jobName"],
+                    $job["filePath"]
+                );
+            }
         }
-        return Page::construct3($limit, $offset, $jobs);
+        $total = $this->getTotalPageExcept();
+        $numberPage = ($total / PAGE_SIZE);
+        if($numberPage != (int)$numberPage || $numberPage === 0){
+            $numberPage =  (int) $numberPage + 1; 
+        }
+        return Page::construct5($limit, $offset, $jobs, $currentPage, $total, $numberPage);
     }
 
     public function getJobById($jobId)
@@ -49,4 +58,12 @@ class Model_Job
             $filePath
         );
     }
+
+    public function getTotalPageExcept()
+    {
+        $sql = 'SELECT COUNT(*) AS total FROM job;';
+		$total = $this->db->getPageSize($sql, "");
+		return $total;
+    }
+    
 }

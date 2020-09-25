@@ -1,28 +1,30 @@
 <?php
 
-include_once("./../model/M_Job.php");
-class  Ctrl_AddJob
+include_once("./../model/M_Challenge.php");
+class  Ctrl_AddChallenge
 {
     public function process()
     {
-        session_start();
-        if (isset($_POST["action"]) && $_POST["action"] == "insert") {
-            $this->uploadFile();
+        $modelChallenge = new Model_Challenge();
+        if (isset($_POST["action"]) && $_POST["action"] === "submit") {
+            $location = $modelChallenge->addNewChallenge($_POST["hint"]);
+            $this->uploadFile($location);
         } else {
-            include_once("./../view/add_job/add_job.php");
+            session_start();
+            include_once("./../view/challenge/add_challenge.php");
         }
     }
-    function uploadFile()
+    function uploadFile($location)
     {
-        $target_dir = "./../uploads/";
-        $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+        $target_file = $location . basename($_FILES["fileToUpload"]["name"]);
         $uploadOk = 1;
         $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-        if (file_exists($target_file)) {
-            echo "Sorry, file already exists.";
-            $uploadOk = 0;
-        }
+        // Check if file already exists
+        // if (file_exists($target_file)) {
+        //     echo "Sorry, file already exists.";
+        //     $uploadOk = 0;
+        // }
 
         if ($_FILES["fileToUpload"]["size"] > 20000) {
             echo "Sorry, your file is too large.";
@@ -41,10 +43,10 @@ class  Ctrl_AddJob
             exit();
         } else {
             $moved = move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file);
-            if (is_dir($target_dir)) {
-                if (is_writable($target_dir)) {
+            if (is_dir($location)) {
+                if (is_writable($location)) {
                     if ($moved) {
-                        $this->insertJobToDB($_POST["jobName"], $target_file);
+                        header("Location: C_Challenge.php");
                     } else {
                         echo "Not uploaded because of error #" . $_FILES["fileToUpload"]["error"];
                     }
@@ -52,21 +54,12 @@ class  Ctrl_AddJob
                     echo 'Upload directory is not writable';
                 }
             } else {
-
+                echo $location;
                 echo 'Upload directory does not exist.';
             }
         }
     }
-
-    function insertJobToDB($jobName, $pathFile)
-    {
-        $modelJob = new Model_Job();
-        if ($modelJob->insertNewJob($jobName, $pathFile)) {
-            header("Location: C_Job.php");
-        } else {
-        };
-    }
 };
 
-$C_home = new Ctrl_AddJob();
+$C_home = new Ctrl_AddChallenge();
 $C_home->process();

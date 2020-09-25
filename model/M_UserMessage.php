@@ -22,13 +22,15 @@ class Model_UserMessage
             ORDER BY messageId;";
         $result = $this->db->getResultQuerry($sql, "dddd", $firstUserId, $secondUserId, $firstUserId, $secondUserId);
         $user_messages = [];
-        while ($row = mysqli_fetch_array($result)) {
-            $user_messages[] = Entity_UserMessage::construct4(
-                $row["messageId"],
-                $row["fromUserId"],
-                $row["toUserId"],
-                $row["content"]
-            );
+        if($result!=null){
+            while ($row = mysqli_fetch_array($result)) {
+                $user_messages[] = Entity_UserMessage::construct4(
+                    $row["messageId"],
+                    $row["fromUserId"],
+                    $row["toUserId"],
+                    $row["content"]
+                );
+            }
         }
         return $user_messages;
     }

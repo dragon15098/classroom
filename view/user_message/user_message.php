@@ -15,7 +15,7 @@
 
 <body>
     <?php include_once "./../view/header.php";  ?>
-    <?php include_once "./../view/navbar.html"; ?>
+    <?php include_once "./../view/navbar.php"; ?>
 
     <div class="row">
         <?php include_once "./../view/side.php"; ?>
@@ -84,7 +84,7 @@
                         echo "<input onClick='editMessage(" . $message->messageId . ")' id='button" . $message->messageId . "' type='submit' class='input_edit' value='Submit'>";
                         echo "</div>";
                     } else {
-                        echo "<div class='container_message darker'>";
+                        echo "<div style='float: left' class='container_message darker'>";
                         echo "<p>" . $message->content . "</p>";
                         echo "</div>";
                     }

@@ -1,5 +1,4 @@
 <?php
-
 include_once("./../model/M_User.php");
 class  Ctrl_Login
 {
@@ -17,7 +16,9 @@ class  Ctrl_Login
                 if ($userDetail != null) {
                     $pwdCheck = password_verify($password, $userDetail->password);
                     if ($pwdCheck == true) {
-                        session_start();
+                        if (!isset($_SESSION)) {
+                           session_start();
+                        }
                         $_SESSION['userId'] = $userDetail->userId;
                         $_SESSION['type'] = $userDetail->type;
                         $_SESSION['name'] = $userDetail->name;
@@ -38,6 +39,6 @@ class  Ctrl_Login
         }
     }
 };
-
 $C_login = new Ctrl_Login();
 $C_login->process();
+?>

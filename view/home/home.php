@@ -7,11 +7,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./../view/home/home.css">
+    <script src='./../view/lib/kit.fontawesome.js'></script>
+    <script src='./../view/lib/jquery.js'></script>
 </head>
 
 <body>
     <?php include_once "./../view/header.php";  ?>
-    <?php include_once "./../view/navbar.html"; ?>
+    <?php include_once "./../view/navbar.php"; ?>
+
+    <script>
+        function deleteUser(userId) {
+            $.ajax({
+                type: "POST",
+                url: "./C_UserDetail.php",
+                data: {
+                    action: 'delete',
+                    userId: userId,
+                },
+                success: function(res) {
+                    if (res === "SUCCESS") {
+                        location.reload();
+                    }
+                }
+            });
+        }
+    </script>
 
     <div class="row">
         <?php include_once "./../view/side.php"; ?>
@@ -19,9 +39,14 @@
             <span style="font-size:20px">
                 List user
             </span>
-            <button onclick="location.href='./C_AddUser.php'" class='button button_action'>
-                Add user
-            </button>
+            <?php
+            if ($_SESSION["type"] === 1) {
+                echo "<button onclick=\"location.href='./C_AddUser.php'\" class='button button_action'>Add user</button>";
+            } else {
+                echo "<br>";
+                echo "<br>";
+            }
+            ?>
             <table border='1'>
                 <tr>
                     <th>Id</th>
@@ -30,34 +55,24 @@
                 </tr>
                 <?php
 
-                foreach ($pageUsers->data as &$user) {
+                foreach ($page->data as &$user) {
                     echo "<tr>";
                     echo "<td>" . $user->userId . "</td>";
                     echo "<td>" . $user->name . "</td>";
-                    echo "<td>" . "<button onclick=\"location.href='./C_UserDetail.php?id=" . $user->userId . "'\" class=\"button button_action\">View detail</button>" .
-                        "<button onclick=\"location.href='./C_UserDetail.php?id=" . $user->userId . "'\" class=\"button button_action\">Change password</button>" .
-                        "<button onclick=\"location.href='./C_UserDetail.php?id=" . $user->userId . "'\" class=\"button button_action\">Change password</button>" .
-                        "</td>";
+                    echo "<td>";
+                    echo "<button onclick=\"location.href='./C_UserDetail.php?id=" . $user->userId . "'\" class=\"button button_action\">View detail</button>";
+                    if ($_SESSION["type"] === 1) {
+                        echo "<button onclick=\"location.href='./C_ChangePassword.php?id=" . $user->userId . "'\" class=\"button button_action\">Change password</button>";
+                        echo "<button onclick='deleteUser(" . $user->userId . ")' class=\"button button_action\">Delete user</button>";
+                    }
+                    echo "</td>";
                     echo "</tr>";
                 }
                 ?>
             </table>
-            <div class="pagination">
-                <a href="#">&laquo;</a>
-                <?php
-
-                // $sql = 'SELECT COUNT(*) as total FROM user WHERE userId <> ? LIMIT 5 OFFSET 0;';
-                // $result = $db->getResultQuerry($sql, "d", $_SESSION["userId"]);
-                // $row = mysqli_fetch_assoc($result);
-                // $total =  $row["total"];
-                // $size = 5;
-                // $loop_time = $total / $size;
-                // for ($page_number = 1; $page_number <= $loop_time + 1; $page_number++) {
-                //     echo '<a href="#">' . $page_number . '</a>';
-                // }
-                ?>
-                <a href="#">&raquo;</a>
-            </div>
+            <?php
+            include_once "./../view/page_footer.php"
+            ?>
         </div>
     </div>
     <div class="footer">

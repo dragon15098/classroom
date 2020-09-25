@@ -11,48 +11,54 @@ class DatabaseConnection {
 			$ip = $config["ip"];
 		    $username = $config["username"];
 		    $password = $config["password"];             
-		    $db = $config["db"];        
+			$db = $config["db"];
 			$this->conn = new mysqli($ip, $username, $password, $db);
-			echo $this->conn->connect_error;
+			if(!defined('PAGE_SIZE')){
+			    define('PAGE_SIZE', $config["pageSize"]);
+			}
 		}
 	}
 
 	public function query($sql)
 	{	
 		if ($this->conn->connect_errno) {
-		  echo "Failed to connect to MySQL: " . $this->conn->connect_error;
 		  exit();
 		}
-		
 		return mysqli_query($this->conn, $sql);
 	}
-//
+
 	private function prepareQuery($sql, $param_types, ...$params)
 	{	
 		if ($this->conn->connect_errno) {
-		  echo "Failed to connect to MySQL: " . $this->conn->connect_error;
 		  exit();
 		}
 		$stmt = $this->conn->prepare($sql);
-		$stmt->bind_param($param_types, ...$params);
+		if($param_types !== ""){
+		    $stmt->bind_param($param_types, ...$params);
+		}
 		return $stmt;
 	}
 
 	public function getResultQuerry($sql, $param_types, ...$params){
-		// echo $sql;
 		$stmt = $this->prepareQuery($sql, $param_types, ...$params);
-		$result = $stmt->execute();
-		// printf("Error: %s.\n", $stmt->error);
-		return $stmt->get_result();
+		$stmt->execute();
+		$data = $stmt->get_result();
+		if(mysqli_num_rows($data)==0){
+			return null;
+		}
+		return $data;
 	}
-
+	
 	public function getStatusQuerry($sql, $param_types, ...$params){
-		//  echo $sql;
 		$stmt = $this->prepareQuery($sql, $param_types, ...$params);
 		$result = $stmt->execute();
-		// echo $stmt->error;
-	//	printf("Error: %s.\n", $stmt->error);
 		return $result;
+	}
+	public function getPageSize($sql, $param_types, ...$params){
+		$stmt = $this->prepareQuery($sql, $param_types, ...$params);
+		$result = $stmt->execute();
+		$data = mysqli_fetch_array($stmt->get_result());
+		return $data["total"];
 	}
 }
 ?>

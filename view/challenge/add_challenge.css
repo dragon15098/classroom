@@ -94,3 +94,28 @@ body {
   float: right;
   font-size:15px;
 }
+
+
+
+.btn {
+    background-color: white;
+    color: black;
+    padding: 16px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 45%;
+    border-radius: 25px;
+    opacity: 0.9;
+}
+
+.btn_action {
+    background-color: white;
+    color: black;
+    border: 2px solid #4CAF50;
+}
+
+.btn_action:hover {
+    background-color: #4CAF50;
+    color: white;
+}

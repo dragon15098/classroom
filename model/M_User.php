@@ -11,27 +11,37 @@ class Model_User
 		$this->db = new DatabaseConnection();
 	}
 
-	public function getAllUserExcept($exceptUserId, $limit, $offset)
+	public function getAllUserExcept($exceptUserId, $currentPage)
 	{
-		$sql = 'SELECT * FROM user WHERE userId <> ? LIMIT ? OFFSET ?;';
+		$limit = PAGE_SIZE;
+		$offset = ($currentPage - 1) * PAGE_SIZE;
+		$sql = 'SELECT * FROM users WHERE userId <> ? LIMIT ? OFFSET ?;';
 		$result = $this->db->getResultQuerry($sql, "ddd", $exceptUserId, $limit, $offset);
 		$users = [];
-		while ($row = mysqli_fetch_array($result)) {
-			$users[] = Entity_User::construct6(
-				$row["userId"],
-				$row["username"],
-				$row["name"],
-				$row['email'],
-				$row['phoneNumber'],
-				$row['type']
-			);
+		if($result!=null){
+		   	while ($row = mysqli_fetch_array($result)) {
+        		$users[] = Entity_User::construct6(
+        			$row["userId"],
+        			$row["username"],
+        			$row["name"],
+        			$row['email'],
+        			$row['phoneNumber'],
+        			$row['type']
+        		);
+        	}
 		}
-		return Page::construct3($limit, $offset, $users);
+
+		$total = $this->getTotalPageExcept($exceptUserId);
+	    $numberPage = ($total / PAGE_SIZE);
+        if($numberPage != (int)$numberPage || $numberPage === 0){
+            $numberPage =  (int) $numberPage + 1; 
+        }
+		return Page::construct5($limit, $offset, $users, $currentPage, $total, $numberPage);
 	}
 
 	public function getUserById($userId)
 	{
-		$sql = 'SELECT * FROM user WHERE userId = ?;';
+		$sql = 'SELECT * FROM users WHERE userId = ?;';
 		$result = $this->db->getResultQuerry($sql, "d", $userId);
 		$row = mysqli_fetch_array($result);
 		return Entity_User::construct6(
@@ -46,7 +56,7 @@ class Model_User
 
 	public function addUser($username, $password, $name, $email, $phoneNumber, $type)
 	{
-		$sql = "INSERT INTO user (username, password, name, email, phonenumber, type) VALUES (?, ?, ?,?, ?, ?);";
+		$sql = "INSERT INTO users (username, password, name, email, phonenumber, type) VALUES (?, ?, ?,?, ?, ?);";
 		return $this->db->getStatusQuerry(
 			$sql,
 			"sssssd",
@@ -61,7 +71,7 @@ class Model_User
 
 	public function getUserByUsername($username)
 	{
-		$sql = "SELECT * FROM user WHERE username = ?;";
+		$sql = "SELECT * FROM users WHERE username = ?;";
 		$result = $this->db->getResultQuerry($sql, "s", $username);
 
 		if ($result->num_rows != 1) {
@@ -82,7 +92,7 @@ class Model_User
 
 	public function updateUser($username, $name, $email, $phone_number, $id)
 	{
-		$sql = "UPDATE user SET username = ?, name = ?, email = ?, phoneNumber = ? WHERE userId = ?;";
+		$sql = "UPDATE users SET username = ?, name = ?, email = ?, phoneNumber = ? WHERE userId = ?;";
 		return $this->db->getStatusQuerry(
 			$sql,
 			"ssssd",
@@ -93,14 +103,32 @@ class Model_User
 			$id
 		);
 	}
+
 	public function updatePassword($password, $id)
 	{
-		$sql = "UPDATE user SET password = ? WHERE userId = ?;";
+		$sql = "UPDATE users SET password = ? WHERE userId = ?;";
 		return $this->db->getStatusQuerry(
 			$sql,
 			"sd",
 			password_hash($password, PASSWORD_DEFAULT),
 			$id
 		);
+	}
+
+	public function deleteUser($userId)
+	{
+		$sql = "DELETE FROM users WHERE userId = ?";
+		return $this->db->getStatusQuerry(
+			$sql,
+			"d",
+			$userId
+		);
+	}
+
+	public function getTotalPageExcept($exceptUserId)
+	{
+		$sql = 'SELECT COUNT(*) AS total FROM users WHERE userId <> ?';
+		$total = $this->db->getPageSize($sql, "d", $exceptUserId);
+		return $total;
 	}
 }

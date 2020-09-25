@@ -1,7 +1,7 @@
 <div class="header">
     <h1>
         <?php
-        echo "Welcome " . $_SESSION['username'];
+        echo "Welcome " . $_SESSION['name'];
         ?>
     </h1>
     <p>

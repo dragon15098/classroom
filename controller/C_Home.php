@@ -6,10 +6,14 @@ class  Ctrl_Home
     public function process()
     {
         session_start();
+        $currentPage = 1;
+        if (isset($_GET["currentPage"])) {
+            $currentPage = $_GET["currentPage"];
+        }
         $modelUser = new Model_User();
-        $pageUsers =  $modelUser->getAllUserExcept($_SESSION["userId"], 5, 0);
-        include_once("./../view/home/home.php");
+        $page =  $modelUser->getAllUserExcept($_SESSION["userId"], $currentPage);
         
+        include_once("./../view/home/home.php");
     }
 };
 

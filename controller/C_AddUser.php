@@ -23,6 +23,7 @@ class  Ctrl_AddUser
             }
         }
         else{
+            session_start();
             include_once("./../view/add_user/add_user.php");
         }
     }

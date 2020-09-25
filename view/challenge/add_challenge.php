@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./../view/home/home.css">
-    <link rel="stylesheet" href="./../view/add_job/add_job.css">
+    <link rel="stylesheet" href="./../view/challenge/add_challenge.css">
 </head>
 
 <body>
@@ -19,14 +19,14 @@
         <div class="main">
             <form action="C_AddJob.php" method="post" enctype="multipart/form-data">
                 <div class="container">
-                    <h1>Job detail</h1>
-                    <hr>
+                    <h1>Add Challenge</h1>
 
-                    <label for="Name"><b>Job name</b></label>
-                    <input type="text" placeholder="Job name" name="jobName" id="jobName">
+                    <textarea type="text" id="content" name="hint" placeholder="Write some hint.." style="height:100px"></textarea>
                     <input type="file" name="fileToUpload" id="fileToUpload">
-                    <input type="hidden" name="action" value="insert">
-                    <button method="POST" formaction="C_AddJob.php" type="submit" style="float: right;" class="btn btn_action">Create job</button>
+                    <input type="hidden" name="action" value="submit">
+                    <br>
+
+                    <button method="POST" formaction="C_AddChallenge.php" type="submit" style="float: right;" class="btn btn_action">Create challenge</button>
                 </div>
 
             </form>
