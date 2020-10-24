@@ -1,5 +1,5 @@
 <?php
-include_once("./../backend/db_connect.php");
+include_once("/storage/ssd1/108/14948108/public_html/backend/db_connect.php");
 include_once("E_User.php");
 include_once("Page.php");
 class Model_User
@@ -18,24 +18,24 @@ class Model_User
 		$sql = 'SELECT * FROM users WHERE userId <> ? LIMIT ? OFFSET ?;';
 		$result = $this->db->getResultQuerry($sql, "ddd", $exceptUserId, $limit, $offset);
 		$users = [];
-		if($result!=null){
-		   	while ($row = mysqli_fetch_array($result)) {
-        		$users[] = Entity_User::construct6(
-        			$row["userId"],
-        			$row["username"],
-        			$row["name"],
-        			$row['email'],
-        			$row['phoneNumber'],
-        			$row['type']
-        		);
-        	}
+		if ($result != null) {
+			while ($row = mysqli_fetch_array($result)) {
+				$users[] = Entity_User::construct6(
+					$row["userId"],
+					$row["username"],
+					$row["name"],
+					$row['email'],
+					$row['phoneNumber'],
+					$row['type']
+				);
+			}
 		}
 
 		$total = $this->getTotalPageExcept($exceptUserId);
-	    $numberPage = ($total / PAGE_SIZE);
-        if($numberPage != (int)$numberPage || $numberPage === 0){
-            $numberPage =  (int) $numberPage + 1; 
-        }
+		$numberPage = ($total / PAGE_SIZE);
+		if ($numberPage != (int)$numberPage || $numberPage === 0) {
+			$numberPage =  (int) $numberPage + 1;
+		}
 		return Page::construct5($limit, $offset, $users, $currentPage, $total, $numberPage);
 	}
 
@@ -69,12 +69,47 @@ class Model_User
 		);
 	}
 
+	public function addFbUser($name, $email, $phoneNumber, $type, $fbId)
+	{
+		$sql = "INSERT INTO users (name, email, phonenumber, type, fbId) VALUES (?, ?,?, ?, ?);";
+		return $this->db->getStatusQuerry(
+			$sql,
+			"sssds",
+			$name,
+			$email,
+			$phoneNumber,
+			$type,
+			$fbId
+		);
+	}
+
+	public function getUserWithFbId($fbId)
+	{
+		$sql = "SELECT * FROM users WHERE fbID = ?;";
+		$result = $this->db->getResultQuerry($sql, "s", $fbId);
+		if ($result == null) {
+			return null;
+		} else {
+			$user_detail = mysqli_fetch_array($result);
+			return Entity_User::construct8(
+				$user_detail['userId'],
+				$user_detail['username'],
+				$user_detail['password'],
+				$user_detail['name'],
+				$user_detail['email'],
+				$user_detail['phoneNumber'],
+				$user_detail['type'],
+				$user_detail['fbId']
+			);
+		}
+	}
+
 	public function getUserByUsername($username)
 	{
 		$sql = "SELECT * FROM users WHERE username = ?;";
 		$result = $this->db->getResultQuerry($sql, "s", $username);
 
-		if ($result->num_rows != 1) {
+		if ($result!=null && $result->num_rows != 1) {
 			return null;
 		} else {
 			$user_detail = mysqli_fetch_array($result);

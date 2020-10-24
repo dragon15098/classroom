@@ -1,18 +1,4 @@
-<?php
-include_once("./controller/C_FacebookLogin.php");
-// load up global things
-    if ( isset( $_GET['state'] ) && FB_APP_STATE == $_GET['state'] ) { // coming from facebook
-		// try and log the user in with $_GET vars from facebook 
-		$fbUser = tryAndLoginWithFacebook( $_GET );
-		echo ('<pre>');
-		print_r($fbUser);
-		die();
-	}
-?>
-
-
 <html>
-
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type="text/css">
@@ -92,36 +78,23 @@ include_once("./controller/C_FacebookLogin.php");
     <h2>
         Login Form
     </h2>
-    <form action="controller/C_Login.php" method="post">
+    <form action="C_Authentication.php" method="post">
         <div class="imgcontainer">
-            <img src="img_avatar2.png" alt="Avatar" class="avatar">
+            <?php
+            echo ("<img src='$imageLink' >");
+            ?>
+            
         </div>
         <div class="container">
-            <label for="username">
-                <b>Username</b>
+            <label for="qrcode">
+                <b>Qr code</b>
             </label>
-            <input type="text" placeholder="Enter Username" name="username" required="">
-            <label for="password">
-                <b>Password</b>
-            </label>
-            <input type="password" placeholder="Enter Password" name="password" required="">
-            <button type="submit">Login</button>
+            <input type="text" placeholder="Enter Code" name="code" required="">
+            <button type="submit">Submit</button>
         </div>
 
     </form>
-    <div class="container">
-        <?php
-        echo ("<button style=\"background-color: #4267B2;\" onclick=\"location.href= '" . getFacebookLoginUrl() . "' \"  type=\"submit\">Login with Facebook</button>");
-        ?>
-
-    </div>
-
-    <div class="container" style="background-color:#f1f1f1">
-        <button type="button" class="cancelbtn">Cancel</button>
-        <span class="psw">Forgot
-            <a href="#">password?</a>
-        </span>
-    </div>
+   
 </body>
 
 </html>

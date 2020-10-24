@@ -25,7 +25,7 @@
                     <label for="Name"><b>Name</b></label>
                     <input type="text" placeholder="Name" name="name" id="name" 
                     <?php 
-                         if($user->type === 0){
+                         if($_SESSION["type"] == 0){
                             echo " readonly ";
                         }
                     ?>
@@ -34,7 +34,7 @@
                     <label for="Username"><b>Username</b></label>
                     <input type="text" placeholder="Username" name="username" id="username" 
                     <?php 
-                         if($user->type === 0){
+                         if($_SESSION["type"] == 0){
                             echo " readonly ";
                         }
                     ?>

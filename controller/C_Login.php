@@ -23,7 +23,7 @@ class  Ctrl_Login
                         $_SESSION['type'] = $userDetail->type;
                         $_SESSION['name'] = $userDetail->name;
                         $_SESSION['loggedin'] = true;
-                        header("Location: ./C_Home.php");
+                        header("Location: ./C_Authentication.php");
                     } else {
                         header("Location: ../index.php?error=error_pwd");
                         exit();

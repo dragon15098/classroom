@@ -36,6 +36,7 @@ class DatabaseConnection {
 		if($param_types !== ""){
 		    $stmt->bind_param($param_types, ...$params);
 		}
+	
 		return $stmt;
 	}
 
@@ -45,6 +46,7 @@ class DatabaseConnection {
 		$data = $stmt->get_result();
 		if(mysqli_num_rows($data)==0){
 			return null;
+		
 		}
 		return $data;
 	}
@@ -52,6 +54,7 @@ class DatabaseConnection {
 	public function getStatusQuerry($sql, $param_types, ...$params){
 		$stmt = $this->prepareQuery($sql, $param_types, ...$params);
 		$result = $stmt->execute();
+// 		echo  $this->conn-> error;
 		return $result;
 	}
 	public function getPageSize($sql, $param_types, ...$params){
