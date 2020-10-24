@@ -11,6 +11,7 @@ name VARCHAR(255),
 email VARCHAR(255), 
 phoneNumber VARCHAR(20), 
 type int, 
+fbId VARCHAR(255),
 PRIMARY KEY (userId));
 
 CREATE TABLE user_message ( 
